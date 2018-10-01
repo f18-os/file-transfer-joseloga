@@ -34,8 +34,7 @@ def readFile(fileName):
     if not os.path.exists(fileName):
         print ("text file input %s doesn't exist!" % fileName)
         cmd()
-        # exit()
-
+        
     readFile = open(fileName,"r")
     print("reading File...")
     fileData2 = readFile.read()
