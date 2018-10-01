@@ -1,7 +1,9 @@
 #! /usr/bin/env python3
 import sys
 sys.path.append("../lib")       # for params
+
 import os, re, socket, params
+
 
 switchesVarDefaults = (
     (('-l', '--listenPort') ,'listenPort', 50001),
@@ -26,11 +28,10 @@ def writeToFile(values):
     currentdir=os.getcwd()+"/"
     dir=os.getcwd()+"/Received/"
     # create new file
-    f=open(values[0],"w+")
+    f=open("received.txt","w+")
     # f=open("received.txt","wb")
     f.write(values[1])
-    os.rename(currentdir+values[0],dir+values[0])
-
+    os.rename(currentdir+"received.txt",dir+values[0])
 
 if paramMap['usage']:
     params.usage()
@@ -41,23 +42,26 @@ lsock.bind(bindAddr)
 lsock.listen(5)
 print("listening on:", bindAddr)
 
-sock, addr = lsock.accept()
-print("connection rec'd from", addr)
-
-from framedSock import framedSend, framedReceive
-
 while True:
-    # print('Server received', repr(data))
-    payload = framedReceive(sock, debug)
+    sock, addr = lsock.accept()
 
-    if payload:
-        # print(payload,"-------------------------")
-        values = payload.decode('utf-8').split(':')
-        print(values)
-        writeToFile(values)
+    from framedSock import framedSend, framedReceive
 
-    if debug: print("rec'd: ", payload)
-    if not payload:
-        break
-    payload += b"!"             # make emphatic!
-    framedSend(sock, payload, debug)
+    if not os.fork():
+        print("new child process handling connection from", addr)
+        while True:
+            payload = framedReceive(sock, debug)
+            if payload:
+                # print(payload,"-------------------------")
+                values = payload.decode('utf-8').split(':')
+                print(values)
+                writeToFile(values)
+
+            if debug: print("rec'd: ", payload)
+
+            if not payload:
+                if debug: print("child exiting")
+                sys.exit(0)
+            payload += b"!"             # make emphatic!
+            framedSend(sock, payload, debug)
+            payload = framedReceive(sock, debug)

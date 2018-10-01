@@ -1,13 +1,13 @@
 #! /usr/bin/env python3
-
+import sys
 sys.path.append("../lib")       # for params
 
-import sys, os, socket, params
+import os, socket, params
 
 
 switchesVarDefaults = (
     (('-l', '--listenPort') ,'listenPort', 50001),
-    (('-d', '--debug'), "debug", False), # boolean (set if present)
+    (('-d', '--debug'), "debug", True), # boolean (set if present)
     (('-?', '--usage'), "usage", False), # boolean (set if present)
     )
 
@@ -35,6 +35,7 @@ while True:
         while True:
             payload = framedReceive(sock, debug)
             if debug: print("rec'd: ", payload)
+            print(payload,"===================")
             if not payload:
                 if debug: print("child exiting")
                 sys.exit(0)
