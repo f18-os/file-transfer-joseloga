@@ -1,9 +1,7 @@
-# nets-tcp-framed-echo
-tcp echo with framing
+# File-transfer
+tcp sending files from clients to the server
 
-Directory `file-transfer-lab` includes a tcp echo server & client
-
-*  `fileClient.py` and `fileServer.py` are a demonstration TCP client and server which exchange frames consisting of byte arrays in the form payload_length:payload where payload_length is in decimal.
+`fileClient.py` and `fileServer.py` are a demonstration TCP client and server which exchange frames consisting of byte arrays in the form payload_length:payload where payload_length is in decimal.
 
 * `fileServer` also uses `fork()` to handle multiple simultaneous clients.    
 

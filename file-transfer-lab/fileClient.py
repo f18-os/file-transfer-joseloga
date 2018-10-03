@@ -23,9 +23,9 @@ server, usage, debug  = paramMap["server"], paramMap["usage"], paramMap["debug"]
 
 def getFileSize(fileName):
     size = os.stat(fileName)
-    if size.st_size > 100:
-        print("Error... The file exceed the 100 bytes")
-        cmd()
+    # if size.st_size > 100:
+    #     print("Error... The file exceed the 100 bytes")
+        # cmd()
     return size.st_size
 
 def readFile(fileName):
@@ -34,15 +34,14 @@ def readFile(fileName):
     if not os.path.exists(fileName):
         print ("text file input %s doesn't exist!" % fileName)
         cmd()
-        
-    readFile = open(fileName,"r")
+
+    readFile = open(fileName,"rb")
     print("reading File...")
-    fileData2 = readFile.read()
+    data = readFile.read() # if you only wanted to read 512 bytes, do .read(512)
     readFile.close()
-    fileData1 = fileName
-    fileData1 += ":"+fileData2
-    file = bytearray(fileData1, 'utf-8')
-    return file.rstrip()
+    data=data[0:-2]
+    print(data)
+    return data
 
 def cmd():
     command=input(">>$ ")
@@ -50,12 +49,14 @@ def cmd():
         if ("put" in command):
             fileData= command.split(" ")
             fileName= fileData[1]
-            data=readFile(fileName).rstrip()
+            data=readFile(fileName)
             size=getFileSize(fileName)
             print("encoding file...")
-            # print(data)
+            name = bytearray(fileName+"/n", 'utf-8')
+
+            framedSend(s, name, debug)
             framedSend(s, data, debug)
-            print("received:", framedReceive(s, debug),"\n")
+            print("message from server:", framedReceive(s, debug))
         command=input(">>$ ")
 
 if usage:
