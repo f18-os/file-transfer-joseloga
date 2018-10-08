@@ -24,20 +24,21 @@ def mkdir(folderName):
         pass
 
 def writeToFile(filename, data):
+    #  create te folder from received files
     mkdir('./Received/')
     currentdir=os.getcwd()+"/"
     dir=os.getcwd()+"/Received/"
     fileExists = os.path.isfile(dir+filename)
+    #checks if the text file exists
     if fileExists:
         print ("file exists")
         framedSend(sock, b'file already exist!', debug)
     else:
-        # create file
+        # create a new file
         file = open(dir+filename, "wb+") # open for [w]riting as [b]inary
-        print(data,"data..........")
+        # print(data,"data..........")
         file.write(data)
         file.close()
-        # os.rename(currentdir+values,dir+values)
 
 if paramMap['usage']:
     params.usage()
@@ -52,24 +53,23 @@ while True:
     sock, addr = lsock.accept()
 
     from framedSock import framedSend, framedReceive
-
+# here we create a new child to new clients
     if not os.fork():
         print("new child process handling connection from", addr)
         filename=""
         while True:
             payload = framedReceive(sock, debug)
-            print(payload,"-----------------")
+            # print(payload,"-----------------")
             payload2 = framedReceive(sock, debug)
-            print(payload2,"+++++++++++++++++++++")
+            # print(payload2,"+++++++++++++++++++++")
 
             char="/n"
             decode =bytearray(char,'utf-8')
             if decode in payload:
                 filename= payload.decode("utf-8")
                 filename= filename[:-2]
-                print("file name: ",filename)
-        # ?        payload = framedReceive(sock, debug)
-                print(payload2)
+                # print("file name: ",filename)
+                # print(payload2)
                 writeToFile(filename,payload2)
 
             if debug: print("rec'd: ", payload)

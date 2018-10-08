@@ -20,12 +20,12 @@ progname = "framedClient"
 paramMap = params.parseParams(switchesVarDefaults)
 
 server, usage, debug  = paramMap["server"], paramMap["usage"], paramMap["debug"]
-
+# this method verify if the file is too large
 def getFileSize(fileName):
     size = os.stat(fileName)
-    # if size.st_size > 100:
-    #     print("Error... The file exceed the 100 bytes")
-        # cmd()
+    if size.st_size > 100:
+        print("Error... The file exceed the 100 bytes")
+        cmd()
     return size.st_size
 
 def readFile(fileName):
@@ -34,13 +34,13 @@ def readFile(fileName):
     if not os.path.exists(fileName):
         print ("text file input %s doesn't exist!" % fileName)
         cmd()
-
+    # open the file in bytes in order to send the data as bytes
     readFile = open(fileName,"rb")
     print("reading File...")
-    data = readFile.read() # if you only wanted to read 512 bytes, do .read(512)
+    data = readFile.read()
     readFile.close()
-    data=data[0:-2]
-    print(data)
+    data=data[0:-2]  #this deletes the new line in the data to prevent errors while sending it
+    # print(data)
     return data
 
 def cmd():
@@ -57,6 +57,7 @@ def cmd():
             framedSend(s, name, debug)
             framedSend(s, data, debug)
             print("message from server:", framedReceive(s, debug))
+
         command=input(">>$ ")
 
 if usage:
@@ -94,4 +95,5 @@ if s is None:
 
 
 print("connection established!")
+# this is in charge to register the commands of the client
 cmd()

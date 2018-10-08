@@ -8,3 +8,9 @@ tcp sending files from clients to the server
 *  The -? (usage) option prints parameters and default values.
 
 *  `framedSock.py` holds the common code used in the client and server including framed send and receive.
+
+To run this first run the fileServer.py and then run the fileClient.py in one or multiple command lines
+then as a client is a command called "put" where you can send files to the server.
+ex. put "test.txt".
+
+* Notice that you can only send 100 bytes long.
